@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sentiment Analysis</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+    }
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    #sentiment-chart {
+      height: 400px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Sentiment Analysis</h1>
+    <div id="sentiment-chart"></div>
+  </div>
+
+  <script src="https://d3js.org/d3.v6.min.js"></script>
+  <script>
+    // Assuming you have the necessary data loaded
+    const data = [
+      { date: '2023-01-01', sentiment: 0.8 },
+      { date: '2023-01-02', sentiment: 0.6 },
+      { date: '2023-01-03', sentiment: 0.7 },
+      { date: '2023-01-04', sentiment: 0.5 },
+      { date: '2023-01-05', sentiment: 0.9 },
+      // Add more data points as needed
+    ];
+
+    // Set up the chart dimensions
+    const width = 800;
+    const height = 400;
+
+    // Create the SVG container
+    const svg = d3.select('#sentiment-chart')
+      .append('svg')
+      .attr('width', width)
+      .attr('height', height);
+
+    // Create the x and y scales
+    const x = d3.scaleTime()
+      .range([0, width])
+      .domain(d3.extent(data, (d) => new Date(d.date)));
+
+    const y = d3.scaleLinear()
+      .range([height, 0])
+      .domain([0, 1]);
+
+    // Create the line generator
+    const line = d3.line()
+      .x((d) => x(new Date(d.date)))
+      .y((d) => y(d.sentiment));
+
+    // Draw the line chart
+    svg.append('path')
+      .datum(data)
+      .attr('fill', 'none')
+      .attr('stroke', 'steelblue')
+      .attr('stroke-width', 2)
+      .attr('d', line);
+
+    // Add the x-axis
+    svg.append('g')
+      .attr('transform', `translate(0, ${height})`)
+      .call(d3.axisBottom(x));
+
+    // Add the y-axis
+    svg.append('g')
+      .call(d3.axisLeft(y));
+
+    // Add labels
+    svg.append('text')
+      .attr('x', width / 2)
+      .attr('y', height + 30)
+      .style('text-anchor', 'middle')
+      .text('Date');
+
+    svg.append('text')
+      .attr('transform', 'rotate(-90)')
+      .attr('y', -50)
+      .attr('x', -height / 2)
+      .style('text-anchor', 'middle')
+      .text('Sentiment Score');
+  </script>
+</body>
+</html>
